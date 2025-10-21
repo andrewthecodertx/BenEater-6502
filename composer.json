@@ -1,0 +1,26 @@
+{
+  "name": "andrewthecoder/eater-emulator",
+  "description": "Ben Eater's beadboard 6502 computer emulator",
+  "type": "project",
+  "require": {
+    "andrewthecoder/6502-emulator": "dev-main"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "13.0.x-dev",
+    "phpstan/phpstan": "2.1.x-dev"
+  },
+  "license": "MIT",
+  "autoload": {
+    "psr-4": {
+      "EaterEmulator\\": "src/",
+      "EaterEmulator\\Tests\\": "tests/"
+    }
+  },
+  "authors": [
+    {
+      "name": "Andrew S Erwin",
+      "email": "andrewerwin73@gmail.com"
+    }
+  ],
+  "minimum-stability": "dev"
+}
