@@ -8,54 +8,92 @@ use EaterEmulator\ROM;
 use EaterEmulator\RAM;
 use EaterEmulator\SystemBus;
 use EaterEmulator\Peripherals\VIA;
+use EaterEmulator\Peripherals\ACIA;
 use andrewthecoder\MOS6502\CPU;
 
-if ($argc < 1) {
-    echo "Usage: {$argv[0]} <binary_file>\n";
+// Register shutdown function to restore terminal
+register_shutdown_function(function () {
+    ACIA::restoreTerminal();
+    echo "\n";
+});
+
+// Handle Ctrl+C gracefully
+pcntl_signal(SIGINT, function () {
+    ACIA::restoreTerminal();
+    echo "\n\nInterrupted.\n";
+    exit(0);
+});
+
+if ($argc < 2) {
+    echo "Usage: {$argv[0]} <binary_file> [clock_hz]\n";
     echo "\nOptions:\n";
     echo "  binary_file  - ROM file to load\n";
+    echo "  clock_hz     - Clock speed in Hz (default: 1000, 0 = unlimited)\n";
     exit(1);
 }
 
 $binaryFile = $argv[1];
-$clockHz = 1000;
+$clockHz = isset($argv[2]) ? (int)$argv[2] : 1000;
 
 if (!file_exists($binaryFile)) {
     echo "Error: File not found: {$binaryFile}\n";
     exit(1);
 }
 
-echo "Ben Eater Breadboard 65C02 Emulator\n";
-echo "===================================\n";
-echo "Loading: {$binaryFile}\n";
-echo "Clock: 1 kHz\n";
+// Clear screen and setup display
+echo "\033[2J\033[H";
+
+echo "╔═══════════════════════════════════════════════════════════════════════════════╗\n";
+echo "║                  Ben Eater 6502 Breadboard Computer Emulator                  ║\n";
+echo "╚═══════════════════════════════════════════════════════════════════════════════╝\n";
+echo "ROM: {$binaryFile}\n";
+if ($clockHz > 0) {
+    echo "Clock: " . number_format($clockHz) . " Hz\n";
+} else {
+    echo "Clock: Unlimited\n";
+}
 echo "\n";
 
 $rom = new ROM($binaryFile);
 $ram = new RAM();
 $via = new VIA();
+$acia = new ACIA();
 
 $bus = new SystemBus($ram, $rom);
-$bus->addPeripheral($via);
+$bus->addPeripheral($acia);  // ACIA at $5000
+$bus->addPeripheral($via);   // VIA at $6000
 
 $cpu = new CPU($bus);
 
 $bus->setCpu($cpu);
 $cpu->reset();
 
-echo "VIA Output (Press Ctrl+C to stop):\n\n";
+// Display fixed header
+echo "┌─ VIA LEDs ────────────────────────────────────────────────────────────────────┐\n";
+echo "│ Port A:  ○   ○   ○   ○   ○   ○   ○   ○   [0x00]                               │\n";
+echo "│ Port B:  ○   ○   ○   ○   ○   ○   ○   ○   [0x00]                               │\n";
+echo "└───────────────────────────────────────────────────────────────────────────────┘\n";
+echo "┌─ Serial Console (ACIA) ───────────────────────────────────────────────────────┐\n";
 
-$lastPortA = null;
-$lastPortB = null;
-$changeCount = 0;
+// Save cursor position for LED updates
+$ledLineA = 8; // Line number for Port A
+$ledLineB = 9; // Line number for Port B
+$consoleLine = 12; // Line where console output starts
+
+$lastPortA = 0;
+$lastPortB = 0;
 $cycleCount = 0;
 $startTime = microtime(true);
 
-$usecsPerInstruction = (1000000 / $clockHz);
+$usecsPerInstruction = $clockHz > 0 ? (1000000 / $clockHz) : 0;
 $nextInstructionTime = microtime(true);
 
-// stop after 20,000 cycles if CTRL-C isn't pressed!
-while ($cycleCount < 20000) {
+while (true) {
+    // Dispatch signals for Ctrl+C handling
+    if (function_exists('pcntl_signal_dispatch')) {
+        pcntl_signal_dispatch();
+    }
+
     $cpu->step();
     $cycleCount++;
 
@@ -68,52 +106,52 @@ while ($cycleCount < 20000) {
         }
     }
 
+    // Check for LED changes every 100 cycles
     if ($cycleCount % 100 === 0) {
         $currentPortA = $via->getPortAOutput();
         $currentPortB = $via->getPortBOutput();
 
         if ($currentPortA !== $lastPortA || $currentPortB !== $lastPortB) {
-            echo "\r\033[K";
-            echo formatVIADisplay($currentPortA, $currentPortB, $cycleCount);
-            flush();
+            // Update LED display
+            updateLEDs($ledLineA, $ledLineB, $currentPortA, $currentPortB);
 
             $lastPortA = $currentPortA;
             $lastPortB = $currentPortB;
-            $changeCount++;
         }
     }
 }
 
+// Move to bottom of display
+echo "\n";
+echo "└───────────────────────────────────────────────────────────────────────────────┘\n";
+
 $endTime = microtime(true);
 $elapsed = $endTime - $startTime;
 
-echo "\n\n";
+echo "\n";
 echo "Execution complete.\n";
 echo "Total cycles: {$cycleCount}\n";
 echo "Elapsed time: " . number_format($elapsed, 3) . " seconds\n";
 if ($elapsed > 0) {
     echo "Effective speed: " . number_format($cycleCount / $elapsed, 0) . " Hz\n";
 }
-echo "Total changes: {$changeCount}\n";
 
-function formatVIADisplay(int $portA, int $portB, int $cycle): string
+function updateLEDs(int $lineA, int $lineB, int $portA, int $portB): void
 {
-    $display = '';
-    if ($portA !== 0) {
-        $display .= "A: " . formatLEDs($portA) . sprintf(" [0x%02X]  ", $portA);
-    }
+    // Save current cursor position
+    echo "\033[s";
 
-    if ($portB !== 0) {
-        $display .= "B: " . formatLEDs($portB) . sprintf(" [0x%02X]  ", $portB);
-    }
+    // Update Port A
+    echo "\033[{$lineA};1H"; // Move to line A
+    echo "│ Port A: " . formatLEDs($portA) . sprintf(" [0x%02X]                          │", $portA);
 
-    if ($portA === 0 && $portB === 0) {
-        $display .= "A: " . formatLEDs($portA) . " [0x00]  ";
-        $display .= "B: " . formatLEDs($portB) . " [0x00]  ";
-    }
-    $display .= sprintf("Cycle: %d", $cycle);
+    // Update Port B
+    echo "\033[{$lineB};1H"; // Move to line B
+    echo "│ Port B: " . formatLEDs($portB) . sprintf(" [0x%02X]                          │", $portB);
 
-    return $display;
+    // Restore cursor position
+    echo "\033[u";
+    flush();
 }
 
 function formatLEDs(int $value): string
