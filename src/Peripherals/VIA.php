@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace EaterEmulator\Peripherals;
 
-use andrewthecoder\MOS6502\PeripheralInterface;
+use andrewthecoder\Core\PeripheralInterface;
 
 /**
  * W65C22 Versatile Interface Adapter (VIA) emulation.

@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace EaterEmulator;
 
-use andrewthecoder\MOS6502\CPU;
-use andrewthecoder\MOS6502\BusInterface;
-use andrewthecoder\MOS6502\PeripheralInterface;
+use andrewthecoder\WDC65C02\CPU;
+use andrewthecoder\Core\BusInterface;
+use andrewthecoder\Core\PeripheralInterface;
 
 /**
  * Memory-mapped I/O bus for the BenEater 6502 system.

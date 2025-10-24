@@ -11,13 +11,13 @@
             "version": "dev-main",
             "source": {
                 "type": "git",
-                "url": "https://github.com/andrewthecodertx/6502-Emulator.git",
-                "reference": "f2c1865316a429b36c5c406a0d2e33fc56bbdc90"
+                "url": "https://github.com/andrewthecodertx/65C02-Emulator.git",
+                "reference": "6cc01e26df74e24d01d2430778a88f5ffcb02ec6"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/andrewthecodertx/6502-Emulator/zipball/f2c1865316a429b36c5c406a0d2e33fc56bbdc90",
-                "reference": "f2c1865316a429b36c5c406a0d2e33fc56bbdc90",
+                "url": "https://api.github.com/repos/andrewthecodertx/65C02-Emulator/zipball/6cc01e26df74e24d01d2430778a88f5ffcb02ec6",
+                "reference": "6cc01e26df74e24d01d2430778a88f5ffcb02ec6",
                 "shasum": ""
             },
             "require": {
@@ -31,8 +31,9 @@
             "type": "library",
             "autoload": {
                 "psr-4": {
-                    "andrewthecoder\\Tests\\": "tests/",
-                    "andrewthecoder\\MOS6502\\": "src/"
+                    "andrewthecoder\\Core\\": "src/Core/",
+                    "andrewthecoder\\MOS6502\\": "src/MOS6502/",
+                    "andrewthecoder\\WDC65C02\\": "src/WDC65C02/"
                 }
             },
             "notification-url": "https://packagist.org/downloads/",
@@ -47,18 +48,19 @@
                 }
             ],
             "description": "A 6502 microprocessor emulator written in PHP.",
-            "homepage": "https://andrewthecoder.com/MOS6502",
+            "homepage": "https://andrewthecoder.com/6502Emulator",
             "keywords": [
                 "6502",
+                "65c02",
                 "emulator",
                 "php",
                 "retrocomputing"
             ],
             "support": {
-                "issues": "https://github.com/andrewthecodertx/6502-Emulator/issues",
-                "source": "https://github.com/andrewthecodertx/6502-Emulator/tree/main"
+                "issues": "https://github.com/andrewthecodertx/65C02-Emulator/issues",
+                "source": "https://github.com/andrewthecodertx/65C02-Emulator/tree/main"
             },
-            "time": "2025-10-21T18:21:06+00:00"
+            "time": "2025-10-24T13:28:20+00:00"
         }
     ],
     "packages-dev": [
@@ -129,12 +131,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/nikic/PHP-Parser.git",
-                "reference": "0105ba17b5095f96b67b00010687cd65790b8658"
+                "reference": "3a454ca033b9e06b63282ce19562e892747449bb"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/nikic/PHP-Parser/zipball/0105ba17b5095f96b67b00010687cd65790b8658",
-                "reference": "0105ba17b5095f96b67b00010687cd65790b8658",
+                "url": "https://api.github.com/repos/nikic/PHP-Parser/zipball/3a454ca033b9e06b63282ce19562e892747449bb",
+                "reference": "3a454ca033b9e06b63282ce19562e892747449bb",
                 "shasum": ""
             },
             "require": {
@@ -180,7 +182,7 @@
                 "issues": "https://github.com/nikic/PHP-Parser/issues",
                 "source": "https://github.com/nikic/PHP-Parser/tree/master"
             },
-            "time": "2025-10-19T13:43:25+00:00"
+            "time": "2025-10-21T19:32:17+00:00"
         },
         {
             "name": "phar-io/manifest",
@@ -306,8 +308,8 @@
             "version": "2.1.x-dev",
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpstan/phpstan/zipball/bb821e2e1ab71d311fd6d4eb5843ed922e9dde5d",
-                "reference": "bb821e2e1ab71d311fd6d4eb5843ed922e9dde5d",
+                "url": "https://api.github.com/repos/phpstan/phpstan/zipball/fa997420f9e3827c02b5f8fb9c1bc201fca0a999",
+                "reference": "fa997420f9e3827c02b5f8fb9c1bc201fca0a999",
                 "shasum": ""
             },
             "require": {
@@ -353,7 +355,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2025-10-21T12:16:04+00:00"
+            "time": "2025-10-24T09:00:35+00:00"
         },
         {
             "name": "phpunit/php-code-coverage",
@@ -748,12 +750,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/phpunit.git",
-                "reference": "33d931d538fb5fc3600273e629299c9638b761bd"
+                "reference": "a96c61dfc29d9827155ee9771454967bd57bef5d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/33d931d538fb5fc3600273e629299c9638b761bd",
-                "reference": "33d931d538fb5fc3600273e629299c9638b761bd",
+                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/a96c61dfc29d9827155ee9771454967bd57bef5d",
+                "reference": "a96c61dfc29d9827155ee9771454967bd57bef5d",
                 "shasum": ""
             },
             "require": {
@@ -846,7 +848,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2025-10-16T06:58:55+00:00"
+            "time": "2025-10-22T06:18:11+00:00"
         },
         {
             "name": "sebastian/cli-parser",

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace EaterEmulator\Peripherals;
 
-use andrewthecoder\MOS6502\PeripheralInterface;
+use andrewthecoder\Core\PeripheralInterface;
 
 /**
  * W65C51 ACIA (Asynchronous Communications Interface Adapter) Emulation

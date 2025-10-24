@@ -9,7 +9,7 @@ use EaterEmulator\RAM;
 use EaterEmulator\SystemBus;
 use EaterEmulator\Peripherals\VIA;
 use EaterEmulator\Peripherals\ACIA;
-use andrewthecoder\MOS6502\CPU;
+use andrewthecoder\WDC65C02\CPU;
 
 // Register shutdown function to restore terminal
 register_shutdown_function(function () {
@@ -44,7 +44,7 @@ if (!file_exists($binaryFile)) {
 echo "\033[2J\033[H";
 
 echo "╔═══════════════════════════════════════════════════════════════════════════════╗\n";
-echo "║                  Ben Eater 6502 Breadboard Computer Emulator                  ║\n";
+echo "║                  Ben Eater 65c02 Breadboard Computer Emulator                 ║\n";
 echo "╚═══════════════════════════════════════════════════════════════════════════════╝\n";
 echo "ROM: {$binaryFile}\n";
 if ($clockHz > 0) {
